@@ -1,0 +1,50 @@
+# Write a python script
+
+#Write a script that organizes files into folders
+
+#Import module os and pathlib for interacting with path, file, and directory.
+import os #provides functions for creating and removing a directory (folder), fetching its contents, changing and identifying the current directory, etc.
+from pathlib import Path
+
+#Define file categories using dictionary
+
+DIRECTORY = { 
+    "DOCUMENTS": [".pdf", ".docx", ".xls", ".txt"],
+    "AUDIO": [".mp3", ".m4b", ".m4a"],
+    "IMAGES": [".jpg", ".jpeg", ".png", ".gif"]
+    }
+
+#pick name of category from knowing the extention
+#loops and checks file extention then returns category
+def pickDir(value):
+    for category, extension in DIRECTORY.items():
+        for suffix in extension:
+            if suffix == value:
+                return category
+            
+#main
+def organizeDir():
+    for file in os.scandir():
+        
+        #Only looking for file -- skip the directory
+        if file.is_dir():
+            continue
+        
+        filePath = Path(file) 
+        fileType = filePath.suffix.lower()
+        directory = pickDir(fileType)
+        
+        #skip if file extension not defined
+        if directory == None:
+            continue
+        
+        directoryPath = Path(directory)
+        #make new directory if category's directory not found
+        if directoryPath.is_dir() != True:
+            directoryPath.mkdir()
+        filePath.rename(directoryPath.joinpath(filePath))
+        
+organizeDir()
+        
+        
+        
